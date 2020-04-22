@@ -1,26 +1,44 @@
-import React from 'react';
+import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+//curl "https://conversationstartersworld.com/wp-admin/admin-ajax.php"  --data "action=quotescollection&_ajax_nonce=fb930dd8dc&current=1717&char_limit=1000&tags=&orderby=random"
+
 function App() {
-  return (
+const [question,setQuestion] = useState("Click button to get a question!");
+const [dogPic, setDogPic] = useState("");
+function getDogPic(){
+  fetch('https://dog.ceo/api/breeds/image/random?something=test')
+  .then(response => response.json())
+  .then(data => setDogPic(data.message));
+}
+function getNewQuestion(){
+  fetch('https://conversationstartersworld.com/wp-admin/admin-ajax.php?action=quotescollection&_ajax_nonce=fb930dd8dc&current=1717&char_limit=1000')
+  .then(response => response.json())
+  .then(data => setQuestion(data.question));
+}
+console.log(dogPic || logo);
+
+return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <img src={dogPic || logo} className={dogPic || "App-logo"} alt="logo" />
+        <h1 id="QuestionText">
+          {question}
+        </h1>
+        <button
+          onClick={() => {
+            getNewQuestion();
+            getDogPic();
+            }
+          }
+        >Click me!</button>
+
       </header>
     </div>
   );
 }
+
+
 
 export default App;
